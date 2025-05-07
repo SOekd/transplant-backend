@@ -32,6 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains:annotations:26.0.2")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.auth0:java-jwt:4.5.0")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
@@ -40,7 +41,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
 }
 
 tasks.withType<Test> {

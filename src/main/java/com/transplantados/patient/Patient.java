@@ -2,28 +2,30 @@ package com.transplantados.patient;
 
 import com.transplantados.transplant.Transplant;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Patient {
+public class Patient implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -31,31 +33,24 @@ public class Patient {
 
     @NotNull
     @NotBlank
-    @Size(min = 3, max = 200)
-    @Column(nullable = false, length = 200)
     private String name;
 
     @NotNull
     @NotBlank
-    @Size(min = 11, max = 11)
-    @Column(nullable = false, length = 11)
     private String cpf;
 
-    @Nullable
+    @Email
+    @NotBlank
     private String email;
 
     @NotBlank
     private String password;
 
-    @NotNull
     @NotBlank
-    @Size(min = 3, max = 100)
     private String cellphone;
 
     @NotNull
     @NotBlank
-    @Size(min = 3, max = 100)
-    @Column(length = 100)
     private String alternativeCellphone;
 
     @NotNull
@@ -74,5 +69,15 @@ public class Patient {
         inverseJoinColumns = @JoinColumn(name = "transplant_id")
     )
     private List<Transplant> transplants;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_PATIENT"));
+    }
+
+    @Override
+    public String getUsername() {
+        return id.toString();
+    }
 
 }
