@@ -29,7 +29,12 @@ public class AuthenticationConfiguration {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-                        .requestMatchers(Routes.Authentication.BASE_ROUTE + "/**").permitAll()
+                        .requestMatchers(
+                                Routes.Authentication.BASE_ROUTE + "/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
