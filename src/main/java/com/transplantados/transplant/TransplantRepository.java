@@ -14,4 +14,6 @@ public interface TransplantRepository extends CrudRepository<Transplant, UUID> {
 
     @NotNull List<Transplant> findAll();
 
+    @NotNull List<Transplant> findAllById(UUID id);
+
 }

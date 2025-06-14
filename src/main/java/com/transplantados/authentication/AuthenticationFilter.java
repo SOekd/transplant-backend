@@ -2,7 +2,6 @@ package com.transplantados.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +28,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             @NotNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        Cookie[] cookies = request.getCookies();
-        String accessToken = null;
+        var accessToken = request.getHeader("Authorization");
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (AuthenticationService.ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
-                    accessToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
 
         if (accessToken != null) {
+            accessToken = accessToken.replace("Bearer ", "");
+
             val user = authenticationService.getAuthenticatedUser(accessToken);
 
             if (user != null) {

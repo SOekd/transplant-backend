@@ -1,13 +1,17 @@
 package com.transplantados.alert;
 
+import com.transplantados.alert.dto.CreateAlertRuleRequest;
 import com.transplantados.transplant.TransplantLogBook;
 import com.transplantados.variables.VariableInput;
+import com.transplantados.variables.VariableRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -18,6 +22,8 @@ import java.util.stream.Collectors;
 public class AlertService {
 
     private final AlertRuleRepository alertRuleRepository;
+
+    private final VariableRepository variableRepository;
 
     private final AlertRepository alertRepository;
 
@@ -59,5 +65,55 @@ public class AlertService {
             }
         });
     }
+
+    public AlertRule createAlertRule(CreateAlertRuleRequest request) {
+        AlertRule rule = AlertRule.builder()
+                .name(request.name())
+                .description(request.description())
+                .logicalOperator(request.logicalOperator())
+                .notifyPatient(request.notifyPatient())
+                .notifyMedicalTeam(request.notifyMedicalTeam())
+                .build();
+
+        List<AlertCondition> conditions = request.conditions().stream().map(condReq -> {
+            var variable = variableRepository.findById(condReq.variableId())
+                    .orElseThrow(() -> new EntityNotFoundException("Variable not found with id: " + condReq.variableId()));
+            return AlertCondition.builder()
+                    .rule(rule)
+                    .variable(variable)
+                    .operator(condReq.operator())
+                    .thresholdValue(condReq.thresholdValue())
+                    .build();
+        }).collect(Collectors.toList());
+
+        rule.setConditions(conditions);
+        return alertRuleRepository.save(rule);
+    }
+
+    public void removeAlertRule(UUID alertRuleId) {
+        if (!alertRuleRepository.existsById(alertRuleId)) {
+            throw new EntityNotFoundException("AlertRule not found with id: " + alertRuleId);
+        }
+        alertRuleRepository.deleteById(alertRuleId);
+    }
+
+    public List<Alert> findAllAlerts(Boolean confirmed) {
+        if (confirmed == null) {
+            return alertRepository.findAll();
+        }
+        return alertRepository.findByConfirmed(confirmed);
+    }
+
+    public Alert confirmAlert(UUID alertId) {
+        Alert alert = alertRepository.findById(alertId)
+                .orElseThrow(() -> new EntityNotFoundException("Alert not found with id: " + alertId));
+        alert.setConfirmed(true);
+        return alertRepository.save(alert);
+    }
+
+    public List<AlertRule> findAllAlertRules() {
+        return alertRuleRepository.findAll();
+    }
+
 
 }

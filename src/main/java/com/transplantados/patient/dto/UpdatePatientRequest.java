@@ -44,4 +44,6 @@ public record UpdatePatientRequest(
         @NotNull
         Sex sex
 ) {
+
+
 }

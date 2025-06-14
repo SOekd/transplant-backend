@@ -3,7 +3,10 @@ package com.transplantados.patient;
 import com.transplantados.patient.dto.ChangePatientPasswordRequest;
 import com.transplantados.patient.dto.CreatePatientRequest;
 import com.transplantados.patient.dto.UpdatePatientRequest;
+import com.transplantados.patient.dto.UpdatePatientTransplantsRequest;
 import com.transplantados.patient.exception.PatientNotFoundException;
+import com.transplantados.transplant.Transplant;
+import com.transplantados.transplant.TransplantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +25,8 @@ import java.util.UUID;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+
+    private final TransplantRepository transplantRepository;
 
     public Patient create(@NotNull @Validated CreatePatientRequest request) {
         Patient patient = Patient.builder()
@@ -69,6 +74,16 @@ public class PatientService {
 
     public List<Patient> findAll() {
         return patientRepository.findAll();
+    }
+
+    public Patient updateTransplants(UUID patientId, UpdatePatientTransplantsRequest request) {
+        val patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException(patientId));
+
+        List<Transplant> transplants = transplantRepository.findAllById(request.transplantIds());
+
+        patient.setTransplants(transplants);
+        return patientRepository.save(patient);
     }
 
     private PasswordEncoder passwordEncoder() {

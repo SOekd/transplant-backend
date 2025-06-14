@@ -6,14 +6,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.transplantados.authentication.dto.LoginRequest;
 import com.transplantados.authentication.dto.LoginResponse;
+import com.transplantados.authentication.dto.RefreshTokenRequest;
 import com.transplantados.authentication.exception.AuthenticationException;
 import com.transplantados.patient.Patient;
 import com.transplantados.patient.PatientRepository;
 import com.transplantados.professional.Professional;
 import com.transplantados.professional.ProfessionalRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -33,10 +31,6 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class AuthenticationService {
-
-    public static final String ACCESS_TOKEN_COOKIE = "access_token";
-
-    private static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
     @Value("${application.jwt-secret}")
     private String jwtSecretKey;
@@ -69,7 +63,7 @@ public class AuthenticationService {
         }
     }
 
-    public LoginResponse login(@NotNull @Validated LoginRequest request, HttpServletResponse response) {
+    public LoginResponse login(@NotNull @Validated LoginRequest request) {
         Patient patient = patientRepository.findByEmail(request.email()).orElse(null);
         Professional professional = professionalRepository.findByEmail(request.email()).orElse(null);
 
@@ -90,41 +84,15 @@ public class AuthenticationService {
 
         UserDetails user = patient != null ? patient : professional;
 
-        Cookie accessTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE, generateAccessToken(user));
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(3600);
-
-        Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE, generateRefreshToken(user));
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(604800);
-
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
-
-        return new LoginResponse(true);
+        return new LoginResponse(
+                generateAccessToken(user),
+                generateRefreshToken(user)
+        );
     }
 
-    public void refreshToken(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) {
+    public LoginResponse refreshToken(@NotNull @Validated RefreshTokenRequest request) {
         try {
-            Cookie[] cookies = request.getCookies();
-            String refreshToken = null;
-
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (REFRESH_TOKEN_COOKIE.equals(cookie.getName())) {
-                        refreshToken = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-
-            if (refreshToken == null) {
-                throw new AuthenticationException();
-            }
+            String refreshToken = request.refreshToken();
 
             Algorithm algorithm = Algorithm.HMAC384(jwtSecretKey);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -144,40 +112,16 @@ public class AuthenticationService {
                 throw new AuthenticationException();
             }
 
-            Cookie accessTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE, generateAccessToken(user));
-            accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setSecure(true);
-            accessTokenCookie.setPath("/");
-            accessTokenCookie.setMaxAge(3600);
+            String accessToken = generateAccessToken(user);
+            String newRefreshToken = generateRefreshToken(user);
 
-            Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE, generateRefreshToken(user));
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setSecure(true);
-            refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge(604800);
-
-            response.addCookie(refreshTokenCookie);
-            response.addCookie(accessTokenCookie);
+            return new LoginResponse(
+                    accessToken,
+                    newRefreshToken
+            );
         } catch (JWTVerificationException exception) {
             throw new AuthenticationException();
         }
-    }
-
-    public void logout(HttpServletResponse response) {
-        Cookie accessTokenCookie = new Cookie(ACCESS_TOKEN_COOKIE, null);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(0);
-
-        Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE, null);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(0);
-
-        response.addCookie(refreshTokenCookie);
-        response.addCookie(accessTokenCookie);
     }
 
     private String generateAccessToken(@NotNull UserDetails user) {
@@ -187,7 +131,7 @@ public class AuthenticationService {
                 .withIssuer(issuer)
                 .withSubject(user.getUsername())
                 .withClaim("patient", user instanceof Patient)
-                .withExpiresAt(Instant.now().plusSeconds(3600))
+                .withExpiresAt(Instant.now().plusSeconds(604800))
                 .sign(algorithm);
     }
 

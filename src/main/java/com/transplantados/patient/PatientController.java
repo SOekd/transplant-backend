@@ -3,6 +3,7 @@ package com.transplantados.patient;
 import com.transplantados.patient.dto.ChangePatientPasswordRequest;
 import com.transplantados.patient.dto.CreatePatientRequest;
 import com.transplantados.patient.dto.UpdatePatientRequest;
+import com.transplantados.patient.dto.UpdatePatientTransplantsRequest;
 import com.transplantados.shared.Routes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,9 @@ public class PatientController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(Routes.Patient.UPDATE_TRANSPLANTS)
+    public ResponseEntity<Patient> updateTransplants(@PathVariable UUID patientId, @RequestBody @Validated UpdatePatientTransplantsRequest request) {
+        return ResponseEntity.ok(patientService.updateTransplants(patientId, request));
+    }
 
 }

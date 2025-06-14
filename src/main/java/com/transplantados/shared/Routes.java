@@ -10,10 +10,6 @@ public class Routes {
 
         public static final String LOGIN = "/login";
 
-        public static final String LOGOUT = "/logout";
-
-        public static final String REFRESH = "/refresh";
-
     }
 
     public static class Patient {
@@ -30,6 +26,18 @@ public class Routes {
 
         public static final String CHANGE_PASSWORD = "/change-password";
 
+        public static final String MEDICATION_BASE_ROUTE = BASE_ROUTE + "/{patientId}/medication";
+
+        public static final String MEDICATION_GET_ALL = "";
+
+        public static final String MEDICATION_CREATE = "";
+
+        public static final String MEDICATION_REMOVE = "/{medicationId}";
+
+        public static final String MEDICATION_CONSUME = "/{medicationId}/consume";
+
+        public static final String UPDATE_TRANSPLANTS = "/{patientId}/transplants";
+
     }
 
     public static class Transplant {
@@ -37,12 +45,6 @@ public class Routes {
         public static final String BASE_ROUTE = Routes.BASE_ROUTE + "/transplant";
 
         public static final String LOGBOOK = "/logbook";
-
-        public static final String CREATE = "";
-
-        public static final String REMOVE = "/{transplantId}";
-
-        public static final String UPDATE = "";
 
         public static final String GET_ALL = "";
 
@@ -54,9 +56,21 @@ public class Routes {
 
         public static final String GET_ALL = "";
 
+    }
+
+    public static class Alert {
+
+        public static final String BASE_ROUTE = Routes.BASE_ROUTE + "/alert";
+
+        public static final String GET_ALL = "";
+
         public static final String CREATE = "";
 
-        public static final String REMOVE = "/{variableId}";
+        public static final String CONFIRM = "/confirm/{alertId}";
+
+        public static final String REMOVE = "/{alertRuleId}";
+
+        public static final String GET_ALL_RULES = "/rules";
 
     }
 

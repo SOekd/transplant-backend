@@ -2,9 +2,8 @@ package com.transplantados.authentication;
 
 import com.transplantados.authentication.dto.LoginRequest;
 import com.transplantados.authentication.dto.LoginResponse;
+import com.transplantados.authentication.dto.RefreshTokenRequest;
 import com.transplantados.shared.Routes;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,18 +20,13 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(Routes.Authentication.LOGIN)
-    public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest loginRequest, HttpServletResponse response) {
-        return ResponseEntity.ok(authenticationService.login(loginRequest, response));
+    public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest loginRequest) {
+        return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
     @PostMapping(Routes.Authentication.REFRESH)
-    public void refresh(@RequestBody HttpServletRequest request, HttpServletResponse response) {
-        authenticationService.refreshToken(request, response);
-    }
-
-    @PostMapping(Routes.Authentication.LOGOUT)
-    public void logout(HttpServletResponse response) {
-        authenticationService.logout(response);
+    public ResponseEntity<LoginResponse> refresh(@RequestBody @Validated RefreshTokenRequest request) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
 
 }
