@@ -24,9 +24,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
-    @PostMapping(Routes.Authentication.REFRESH)
-    public ResponseEntity<LoginResponse> refresh(@RequestBody @Validated RefreshTokenRequest request) {
-        return ResponseEntity.ok(authenticationService.refreshToken(request));
-    }
-
 }

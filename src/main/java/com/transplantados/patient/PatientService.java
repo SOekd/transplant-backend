@@ -80,7 +80,7 @@ public class PatientService {
         val patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId));
 
-        List<Transplant> transplants = transplantRepository.findAllById(request.transplantIds());
+        List<Transplant> transplants = (List<Transplant>) transplantRepository.findAllById(request.transplantIds());
 
         patient.setTransplants(transplants);
         return patientRepository.save(patient);

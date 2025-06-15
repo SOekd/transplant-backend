@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "alert_rule")
+@Table(name = "transplant")
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,12 +30,10 @@ public class Transplant {
 
     @ManyToMany
     @JoinTable(
-        name = "alert_rule_variable",
-        joinColumns = @JoinColumn(name = "alert_rule_id"),
-        inverseJoinColumns = @JoinColumn(name = "variable_id")
+            name = "transplant_variable",
+            joinColumns = @JoinColumn(name = "transplant_id"),
+            inverseJoinColumns = @JoinColumn(name = "variable_id")
     )
     private List<Variable> variables;
-
-
 
 }
