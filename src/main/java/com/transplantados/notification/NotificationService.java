@@ -24,12 +24,18 @@ public class NotificationService {
 
         UserDetails authenticatedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        val notifications = notificationRepository.findAll();
+
         if (authenticatedUser instanceof Patient patient) {
-            return notificationRepository.findAllByReadAndPatientId(false, patient.getId());
+            return notifications.parallelStream()
+                    .filter(notification -> !notification.isPatientMark() && notification.getPatientId().equals(patient.getId()))
+                    .toList();
         }
 
         if (authenticatedUser instanceof Professional professional) {
-            return notificationRepository.findAllByToAllProfessionalsAndProfessionalsNotContains(true, List.of(professional));
+            return notifications.parallelStream()
+                    .filter(notification -> !notification.getProfessionals().contains(professional.getId()) && notification.isToAllProfessionals())
+                    .toList();
         }
 
         throw new IllegalStateException("User type not recognized: " + authenticatedUser.getClass().getName());
@@ -42,12 +48,14 @@ public class NotificationService {
         UserDetails authenticatedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (authenticatedUser instanceof Patient) {
-            notification.setRead(true);
+            notification.setPatientMark(true);
             notificationRepository.save(notification);
         }
 
         if (authenticatedUser instanceof Professional professional) {
-            notification.getProfessionals().add(professional);
+            if (!notification.getProfessionals().contains(professional.getId())) {
+                notification.getProfessionals().add(professional.getId());
+            }
             notificationRepository.save(notification);
         }
     }

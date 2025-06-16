@@ -1,6 +1,6 @@
 package com.transplantados.notification;
 
-import com.transplantados.professional.Professional;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,8 +10,6 @@ import java.util.UUID;
 @Repository
 public interface NotificationRepository extends CrudRepository<Notification, UUID> {
 
-    List<Notification> findAllByReadAndPatientId(boolean read, UUID patientId);
-
-    List<Notification> findAllByToAllProfessionalsAndProfessionalsNotContains(boolean toAllProfessionals, List<Professional> professionals);
+    @NotNull List<Notification> findAll();
 
 }
