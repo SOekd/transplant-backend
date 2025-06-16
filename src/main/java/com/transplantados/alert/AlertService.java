@@ -1,6 +1,7 @@
 package com.transplantados.alert;
 
 import com.transplantados.alert.dto.CreateAlertRuleRequest;
+import com.transplantados.notification.NotificationRepository;
 import com.transplantados.transplant.TransplantLogBook;
 import com.transplantados.variables.VariableInput;
 import com.transplantados.variables.VariableRepository;
@@ -27,6 +28,8 @@ public class AlertService {
     private final VariableRepository variableRepository;
 
     private final AlertRepository alertRepository;
+
+    private final NotificationRepository notificationRepository;
 
     public void evaluateAndNotify(@Validated TransplantLogBook logBook) {
         Map<UUID, BigDecimal> values = logBook.getInputs().stream()
@@ -58,10 +61,10 @@ public class AlertService {
                 alertRepository.save(alert);
 
                 if (rule.isNotifyPatient()) {
-                    // ... lógica de notificação ao paciente
+
                 }
                 if (rule.isNotifyMedicalTeam()) {
-                    // ... lógica de notificação à equipe
+
                 }
             }
         });

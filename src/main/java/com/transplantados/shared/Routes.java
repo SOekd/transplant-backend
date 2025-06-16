@@ -74,4 +74,14 @@ public class Routes {
 
     }
 
+    public static class Notification {
+
+        public static final String BASE_ROUTE = Routes.BASE_ROUTE + "/notification";
+
+        public static final String GET_ALL = "";
+
+        public static final String MARK_SENT = "/{notificationId}";
+
+    }
+
 }
