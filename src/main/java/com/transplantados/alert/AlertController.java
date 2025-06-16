@@ -1,5 +1,6 @@
 package com.transplantados.alert;
 
+import com.transplantados.alert.dto.ConfirmAlertRequest;
 import com.transplantados.alert.dto.CreateAlertRuleRequest;
 import com.transplantados.shared.Routes;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class AlertController {
     }
 
     @PostMapping(Routes.Alert.CONFIRM)
-    public ResponseEntity<Alert> confirmAlert(@PathVariable UUID alertId) {
-        return ResponseEntity.ok(alertService.confirmAlert(alertId));
+    public ResponseEntity<Alert> confirmAlert(@PathVariable UUID alertId, @RequestBody @Validated ConfirmAlertRequest request) {
+        return ResponseEntity.ok(alertService.confirmAlert(alertId, request.confirmAll()));
     }
 
     @DeleteMapping(Routes.Alert.REMOVE)

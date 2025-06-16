@@ -14,4 +14,6 @@ public interface AlertRepository extends CrudRepository<Alert, UUID> {
 
     @NotNull List<Alert> findAll();
 
+    List<Alert> findAllByPatientId(UUID patientId);
+
 }

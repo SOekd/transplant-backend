@@ -105,11 +105,21 @@ public class AlertService {
         return alertRepository.findByConfirmed(confirmed);
     }
 
-    public Alert confirmAlert(UUID alertId) {
+    public Alert confirmAlert(UUID alertId, boolean confirmAll) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new EntityNotFoundException("Alert not found with id: " + alertId));
         alert.setConfirmed(true);
         alert.setConfirmedAt(LocalDateTime.now());
+
+        if (confirmAll) {
+            List<Alert> allAlerts = alertRepository.findAllByPatientId(alert.getPatient().getId());
+            allAlerts.forEach(a -> {
+                a.setConfirmed(true);
+                a.setConfirmedAt(LocalDateTime.now());
+            });
+            alertRepository.saveAll(allAlerts);
+        }
+
         return alertRepository.save(alert);
     }
 
