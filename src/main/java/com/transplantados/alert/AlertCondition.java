@@ -1,5 +1,6 @@
 package com.transplantados.alert;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.transplantados.variables.Variable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class AlertCondition {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "rule_id")
+    @JsonBackReference
     private AlertRule rule;
 
     @ManyToOne(optional = false)

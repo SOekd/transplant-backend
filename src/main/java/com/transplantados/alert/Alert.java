@@ -39,5 +39,8 @@ public class Alert {
 
     private boolean confirmed = false;
 
+    private LocalDateTime confirmedAt;
+
     private LocalDateTime triggeredAt = LocalDateTime.now();
+
 }

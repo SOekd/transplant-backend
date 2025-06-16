@@ -1,5 +1,6 @@
 package com.transplantados.alert;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ public class AlertRule {
     private boolean notifyMedicalTeam;
 
     @OneToMany(mappedBy = "rule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<AlertCondition> conditions = new ArrayList<>();
 
 }
