@@ -3,10 +3,7 @@ package com.transplantados.notification;
 import com.transplantados.shared.Routes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +20,7 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getAllNotifications());
     }
 
-    @GetMapping(Routes.Notification.MARK_SENT)
+    @PostMapping(Routes.Notification.MARK_SENT)
     public ResponseEntity<Void> markNotificationAsSent(@PathVariable UUID notificationId) {
         notificationService.markNotificationAsRead(notificationId);
         return ResponseEntity.noContent().build();
