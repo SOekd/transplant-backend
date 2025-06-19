@@ -67,10 +67,10 @@ public class ApplicationDataLoader implements ApplicationRunner {
         Variable systolicBP = variableRepository.save(Variable.builder().name("Pressão Arterial Sistólica").unityOfMeasure("mmHg").showInLogBook(true).deviceVariable(DeviceVariable.BLOOD_PRESSURE_SYSTOLIC).build());
         Variable diastolicBP = variableRepository.save(Variable.builder().name("Pressão Arterial Diastólica").unityOfMeasure("mmHg").showInLogBook(true).deviceVariable(DeviceVariable.BLOOD_PRESSURE_DIASTOLIC).build());
         Variable bloodGlucose = variableRepository.save(Variable.builder().name("Glicemia Capilar").unityOfMeasure("mg/dL").showInLogBook(true).deviceVariable(DeviceVariable.BLOOD_GLUCOSE).build());
+
         Variable temperature = variableRepository.save(Variable.builder().name("Temperatura Corporal").unityOfMeasure("°C").showInLogBook(true).build());
         Variable oxygenSaturation = variableRepository.save(Variable.builder().name("Saturação de Oxigênio").unityOfMeasure("%").showInLogBook(true).build());
         Variable urineOutput = variableRepository.save(Variable.builder().name("Volume Urinário (Diurese)").unityOfMeasure("mL").showInLogBook(true).build());
-        Variable painLevel = variableRepository.save(Variable.builder().name("Nível de Dor").unityOfMeasure("0-10").showInLogBook(true).build());
 
         Variable fever = variableRepository.save(Variable.builder().name("Febre (>37.8°C)").unityOfMeasure("N/A").isSwitch(true).showInLogBook(true).build());
         Variable chills = variableRepository.save(Variable.builder().name("Calafrios").unityOfMeasure("N/A").isSwitch(true).showInLogBook(true).build());
@@ -89,7 +89,7 @@ public class ApplicationDataLoader implements ApplicationRunner {
 
         List<Variable> generalVariables = Arrays.asList(
                 weight, height, heartRate, systolicBP, diastolicBP, bloodGlucose, temperature, oxygenSaturation,
-                urineOutput, painLevel, fever, chills, persistentCough, shortnessOfBreath, edema, tacrolimus, cyclosporine,
+                urineOutput, fever, chills, persistentCough, shortnessOfBreath, edema, tacrolimus, cyclosporine,
                 hemoglobin, leukocytes, platelets, sodium, potassium, cmvViralLoad
         );
 

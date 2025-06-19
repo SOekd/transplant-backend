@@ -73,6 +73,14 @@ public class TransplantService {
                 .stream()
                 .collect(Collectors.toMap(CreateTransplantLogBookRequest.TransplantLogBookVariable::variable, CreateTransplantLogBookRequest.TransplantLogBookVariable::value));
 
+        val patient = patientRepository.findById(request.patient())
+                .orElseThrow(() -> new TransplantNotFoundException(request.patient()));
+
+        val logBook = TransplantLogBook.builder()
+                .createdAt(LocalDateTime.now())
+                .patient(patient)
+                .build();
+
         List<VariableInput> variables = variableRepository.findAllByIdIn(new ArrayList<>(values.keySet()))
                 .stream()
                 .map(variable -> {
@@ -80,17 +88,11 @@ public class TransplantService {
                     return VariableInput.builder()
                             .variable(variable)
                             .value(value)
+                            .logBook(logBook)
                             .build();
                 }).toList();
 
-        val patient = patientRepository.findById(request.patient())
-                .orElseThrow(() -> new TransplantNotFoundException(request.patient()));
-
-        val logBook = TransplantLogBook.builder()
-                .createdAt(LocalDateTime.now())
-                .patient(patient)
-                .inputs(variables)
-                .build();
+        logBook.setInputs(variables);
 
         val savedLogBook = transplantLogBookRepository.save(logBook);
 
