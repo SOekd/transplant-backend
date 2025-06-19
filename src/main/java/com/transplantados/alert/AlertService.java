@@ -15,12 +15,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AlertService {
 
     private final AlertRuleRepository alertRuleRepository;
@@ -55,6 +55,7 @@ public class AlertService {
                 Alert alert = Alert.builder()
                         .rule(rule)
                         .logBook(logBook)
+                        .patient(logBook.getPatient())
                         .confirmed(false)
                         .build();
 

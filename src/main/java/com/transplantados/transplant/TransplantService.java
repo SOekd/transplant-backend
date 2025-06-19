@@ -1,5 +1,6 @@
 package com.transplantados.transplant;
 
+import com.transplantados.alert.AlertService;
 import com.transplantados.patient.PatientRepository;
 import com.transplantados.transplant.dto.CreateTransplantLogBookRequest;
 import com.transplantados.transplant.dto.CreateTransplantRequest;
@@ -36,7 +37,7 @@ public class TransplantService {
 
     private final TransplantLogBookRepository transplantLogBookRepository;
 
-    private final ApplicationEventPublisher eventPublisher;
+    private final AlertService alertService;
 
     public List<Transplant> findAll() {
         return transplantRepository.findAll();
@@ -96,7 +97,7 @@ public class TransplantService {
 
         val savedLogBook = transplantLogBookRepository.save(logBook);
 
-        eventPublisher.publishEvent(savedLogBook);
+        alertService.evaluateAndNotify(savedLogBook);
     }
 
 }

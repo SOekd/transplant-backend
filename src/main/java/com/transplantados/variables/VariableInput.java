@@ -3,6 +3,7 @@ package com.transplantados.variables;
 import com.transplantados.transplant.TransplantLogBook;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class VariableInput {
     @JoinColumn(name = "variable_id")
     private Variable variable;
 
-    @NotBlank
+    @NotNull
     private BigDecimal value;
 
 }
