@@ -1,5 +1,6 @@
 package com.transplantados.variables;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.transplantados.transplant.TransplantLogBook;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +25,7 @@ public class VariableInput {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "logbook_id")
+    @JsonBackReference
     private TransplantLogBook logBook;
 
     @ManyToOne(optional = false)

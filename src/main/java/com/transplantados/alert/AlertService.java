@@ -57,6 +57,7 @@ public class AlertService {
                         .logBook(logBook)
                         .patient(logBook.getPatient())
                         .confirmed(false)
+                        .triggeredAt(LocalDateTime.now())
                         .build();
 
                 alertRepository.save(alert);

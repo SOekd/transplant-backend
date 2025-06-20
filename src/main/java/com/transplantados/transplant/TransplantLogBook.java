@@ -1,5 +1,6 @@
 package com.transplantados.transplant;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.transplantados.patient.Patient;
 import com.transplantados.variables.VariableInput;
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class TransplantLogBook {
     private Patient patient;
 
     @OneToMany(mappedBy = "logBook", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<VariableInput> inputs = new ArrayList<>();
 
 }
