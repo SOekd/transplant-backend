@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -100,4 +99,10 @@ public class TransplantService {
         alertService.evaluateAndNotify(savedLogBook);
     }
 
+    public List<TransplantLogBook> findLogBooksByPatientId(UUID patientId) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new TransplantNotFoundException(patientId);
+        }
+        return transplantLogBookRepository.findByPatientId(patientId);
+    }
 }

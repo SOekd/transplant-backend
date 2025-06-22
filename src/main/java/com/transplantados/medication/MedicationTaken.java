@@ -1,5 +1,6 @@
 package com.transplantados.medication;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class MedicationTaken {
 
     @ManyToOne
     @JoinColumn(name = "medication_id")
+    @JsonBackReference
     private Medication medication;
 
     private LocalDateTime taken;

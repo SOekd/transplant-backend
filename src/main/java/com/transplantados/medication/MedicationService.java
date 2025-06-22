@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,7 @@ public class MedicationService {
 
         MedicationTaken log = MedicationTaken.builder()
                 .medication(medication)
+                .taken(LocalDateTime.now())
                 .build();
 
         return medicationTakenRepository.save(log);

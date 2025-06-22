@@ -1,6 +1,7 @@
 package com.transplantados.medication;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.transplantados.patient.Patient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +35,7 @@ public class Medication {
     private String dosage;
 
     @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<MedicationTaken> medicationTaken;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping(Routes.Transplant.BASE_ROUTE)
@@ -25,5 +26,9 @@ public class TransplantController {
         transplantService.createLogBook(request);
     }
 
+    @GetMapping(Routes.Transplant.LOGBOOK)
+    public List<TransplantLogBook> getLogBooks(@RequestParam() UUID patientId) {
+        return transplantService.findLogBooksByPatientId(patientId);
+    }
 
 }
