@@ -39,6 +39,11 @@ public class AlertService {
             boolean match = rule.getConditions().stream()
                     .map(cond -> {
                         BigDecimal actual = values.get(cond.getVariable().getId());
+
+                        if (actual == null) {
+                            return false;
+                        }
+
                         BigDecimal threshold = cond.getThresholdValue();
                         return switch (cond.getOperator()) {
                             case LESS_THAN -> actual.compareTo(threshold) < 0;
